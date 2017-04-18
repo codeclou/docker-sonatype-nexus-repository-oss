@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <version>2</version>
+    <repositoryGroups>
+        <repositoryGroup>
+            <id>all</id>
+            <mergedIndexPath>.indexer</mergedIndexPath>
+            <repositories>
+                <repository>internal</repository>
+                <repository>snapshots</repository>
+            </repositories>
+        </repositoryGroup>
+    </repositoryGroups>
+    <managedRepositories>
+        <managedRepository>
+            <location>/archiva-home/repositories/internal</location>
+            <releases>true</releases>
+            <blockRedeployments>true</blockRedeployments>
+            <snapshots>false</snapshots>
+            <scanned>true</scanned>
+            <daysOlder>30</daysOlder>
+            <deleteReleasedSnapshots>false</deleteReleasedSnapshots>
+            <skipPackedIndexCreation>false</skipPackedIndexCreation>
+            <stageRepoNeeded>false</stageRepoNeeded>
+            <id>internal</id>
+            <name>Archiva Managed Internal Repository</name>
+            <indexDir>/archiva-home/repositories/internal/.indexer</indexDir>
+        </managedRepository>
+        <managedRepository>
+            <location>/archiva-home/repositories/snapshots</location>
+            <releases>false</releases>
+            <blockRedeployments>false</blockRedeployments>
+            <snapshots>true</snapshots>
+            <scanned>true</scanned>
+            <refreshCronExpression>0 0\,30 * * * ?</refreshCronExpression>
+            <daysOlder>30</daysOlder>
+            <deleteReleasedSnapshots>false</deleteReleasedSnapshots>
+            <skipPackedIndexCreation>false</skipPackedIndexCreation>
+            <stageRepoNeeded>false</stageRepoNeeded>
+            <id>snapshots</id>
+            <name>Archiva Managed Snapshot Repository</name>
+            <indexDir>/archiva-home/repositories/snapshots/.indexer</indexDir>
+        </managedRepository>
+    </managedRepositories>
+    <remoteRepositories>
+        <remoteRepository>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <downloadRemoteIndex>false</downloadRemoteIndex>
+            <downloadRemoteIndexOnStartup>false</downloadRemoteIndexOnStartup>
+            <id>central</id>
+            <name>Central Repository</name>
+        </remoteRepository>
+        <remoteRepository>
+            <url>https://maven.atlassian.com/public/</url>
+            <timeout>360000</timeout>
+            <downloadRemoteIndex>false</downloadRemoteIndex>
+            <remoteIndexUrl>.index</remoteIndexUrl>
+            <downloadRemoteIndexOnStartup>false</downloadRemoteIndexOnStartup>
+            <id>atlassian-public</id>
+            <name>atlassian-public</name>
+        </remoteRepository>
+    </remoteRepositories>
+</configuration>

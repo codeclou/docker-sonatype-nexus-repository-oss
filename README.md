@@ -1,7 +1,63 @@
 # docker-apache-archiva
+
 Dockerized Apache Archiva™ ready to use as Proxy for most common Repositories.
 
+:bangbang: WORK IN PROGRESS :bangbang:
 
+The Docker Image comes with the following predefined remote repositories, and a repository group called `all`
+which acts as a mirror for everything. 
+
+```
+https://maven.atlassian.com/3rdparty/
+https://maven.atlassian.com/public/
+https://maven.atlassian.com/public-snapshot/
+https://repo.spring.io/release
+https://repo.spring.io/milestone
+https://repo.spring.io/snapshot
+https://maven.java.net/content/groups/public/
+https://repo.maven.apache.org/maven2/
+https://repository.apache.org/content/repositories/releases/
+http://maven.jahia.org/maven2/
+http://repo.jenkins-ci.org/public/
+```
+
+Put this in your `~/.m2/settings.xml`
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd" xmlns="http://maven.apache.org/SETTINGS/1.1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <mirrors>
+    <mirror>
+      <mirrorOf>*</mirrorOf>
+      <name>remote-repos</name>
+      <id>remote-repos</id>
+      <url>http://localhost:8080/repository/all/</url>      
+    </mirror>
+  </mirrors>
+  <servers>
+    <server>
+      <id>remote-repos</id>
+      <username>admin</username>
+      <password>admin1</password>
+    </server>
+  </servers>
+</settings>
+```
+
+Start up Container
+
+```bash
+docker volume create archiva-home
+docker run \
+    --name archiva \
+    --tty \
+    -p 8080:8080 \
+    -v archiva-home:/archiva-home \
+    codeclou/docker-apache-archiva:2.2.1
+```
+
+Now go to http://localhost:8080 and configure user `admin` with password `admin1`
 
 -----
 
