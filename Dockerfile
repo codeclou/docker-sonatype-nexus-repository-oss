@@ -1,14 +1,14 @@
 FROM codeclou/docker-oracle-jdk:8u121
 
 
-ENV ARCHIVA_VERSION 2.2.1
-ENV ARCHIVA_MD5SUM  ff4a83007ac10fe4add308d22dfbc3d6
+ENV NEXUS_OSS_VERSION 3.3.0-01
+ENV NEXUS_OSS_MD5SUM  54cf2d9da3cdeb6ab7dc54f0008bf9a7
 
 RUN addgroup -g 10777 worker && \
     adduser -h /work -H -D -G worker -u 10777 worker && \
     mkdir -p /work && \
     mkdir -p /work-private && \
-    mkdir /archiva && mkdir /archiva-home && \
+    mkdir /nexus && mkdir /nexus-home && \
     chown -R worker:worker /work/ && \
     chown -R worker:worker /work-private/ && \
     apk add --no-cache \
@@ -18,17 +18,17 @@ RUN addgroup -g 10777 worker && \
             python \
             py-pip && \
             pip install shinto-cli && \
-    curl -jkSL -o /opt/apache-archiva-${ARCHIVA_VERSION}-bin.tar.gz \
-         http://mirror.synyx.de/apache/archiva/${ARCHIVA_VERSION}/binaries/apache-archiva-${ARCHIVA_VERSION}-bin.tar.gz  && \
+    curl -jkSL -o /opt/nexus-${NEXUS_OSS_VERSION}-unix.tar.gz \
+         http://download.sonatype.com/nexus/3/nexus-${NEXUS_OSS_VERSION}-unix.tar.gz  && \
     cd /opt && \
-    echo "${ARCHIVA_MD5SUM}  apache-archiva-${ARCHIVA_VERSION}-bin.tar.gz" > apache-archiva-${ARCHIVA_VERSION}-bin.tar.gz-md5sum && \
-    md5sum -c apache-archiva-${ARCHIVA_VERSION}-bin.tar.gz-md5sum && \
-    tar zxf /opt/apache-archiva-${ARCHIVA_VERSION}-bin.tar.gz -C /archiva && \
-    rm /opt/apache-archiva-${ARCHIVA_VERSION}-bin.tar.gz && \
-    cd /archiva && \
-    ln -s apache-archiva-${ARCHIVA_VERSION} apache-archiva-latest && \
-    chown -R worker:worker /archiva && \
-    chown -R worker:worker /archiva-home/
+    echo "${NEXUS_OSS_MD5SUM}  nexus-${NEXUS_OSS_VERSION}-unix.tar.gz" > nexus-${NEXUS_OSS_VERSION}-unix.tar.gz-md5sum && \
+    md5sum -c nexus-${NEXUS_OSS_VERSION}-unix.tar.gz-md5sum && \
+    tar zxf /opt/nexus-${NEXUS_OSS_VERSION}-unix.tar.gz -C /nexus && \
+    rm /opt/nexus-${NEXUS_OSS_VERSION}-unix.tar.gz && \
+    cd /nexus && \
+    ln -s nexus-${NEXUS_OSS_VERSION} nexus-latest && \
+    chown -R worker:worker /nexus && \
+    chown -R worker:worker /nexus-home/
 
 #
 # FILES
@@ -42,14 +42,14 @@ RUN chmod u+rx,g+rx,o+rx,a-w /work-private/docker-entrypoint.sh && \
 # WORKDIR
 #
 WORKDIR /work
-EXPOSE 8080
+EXPOSE 8333
 
 #
 # RUN
 #
 USER worker
-ENV ARCHIVA_BASE /archiva-home
+ENV NEXUS_OSS_BASE /nexus-home
 VOLUME ["/work"]
-VOLUME ["/archiva-home"]
+VOLUME ["/nexus-home"]
 ENTRYPOINT ["/work-private/docker-entrypoint.sh"]
-CMD ["tail", "-f", "/archiva-home/logs/archiva.log"]
+CMD ["/nexus/nexus-latest/bin/nexus", "run"]

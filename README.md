@@ -1,11 +1,87 @@
-# docker-apache-archiva
+# docker-sonatype-nexus-repository-oss
 
-Dockerized Apache Archiva™ ready to use as Proxy for most common Repositories.
+Dockerized [Sonatype Nexus Repository Manager OSS](https://www.sonatype.com/nexus-repository-oss) ready to use as Proxy for most common Repositories.
 
 :bangbang: WORK IN PROGRESS :bangbang:
 
-The Docker Image comes with the following predefined remote repositories, and a repository group called `all`
-which acts as a mirror for everything. 
+**:red_circle: Note:** This docker image is pre configured to run in a trusted network of a startup. 
+**Security is configured loosely** so that the Nexus OSS just acts as a 'Proxy' for all repositories out in the world.
+The primary focus is to safe bandwidth when downloading maven jars or docker images from the internet. 
+If you care for security and want to upload artifacts - that should not be downloadable without authentication - 
+to Nexus OSS, please do not use this image! You can also use the [official Docker Image](https://hub.docker.com/r/sonatype/nexus3/)
+
+-----
+
+&nbsp;
+
+### Prerequisites
+
+
+ * Runs as non-root with fixed UID 10777 and GID 10777. See [howto prepare volume permissions](https://github.com/codeclou/doc/blob/master/docker/README.md).
+ * See [howto use SystemD for named Docker-Containers and system startup](https://github.com/codeclou/doc/blob/master/docker/README.md).
+ * You need Linux at best.
+ * Latest Docker version must be installed.
+
+-----
+
+&nbsp;
+
+### Initial Configuration
+
+**(1) Add hostname alias**
+
+Add the alias on your Docker-Host machine. Or configure a valid hostname in your DNS.
+
+```bash
+sudo su
+echo "127.0.0.1  nexus-oss" >> /etc/hosts
+```
+-----
+
+&nbsp;
+
+### Usage
+
+It will use volumes for persistent storage.
+
+**(1) Create Volumes**
+
+```bash
+docker volume create nexus-oss-home
+```
+
+&nbsp;
+
+**(2) Create Nexus OSSInstance**
+
+```bash
+docker create \
+    --rm \
+    --name nexus-oss \
+    -p 18085:8085 \
+    -v nexus-home:/nexus-home \
+    codeclou/docker-sonatype-nexus-repository-oss:3.3.0-01
+
+docker start nexus-oss
+```
+
+ 
+ 
+&nbsp;
+
+**(3) Start Post Configuration**
+
+
+todo
+
+
+-----
+
+&nbsp;
+
+### Maven Repository Mirror
+
+Preconfigured remote Repositories
 
 ```
 https://maven.atlassian.com/3rdparty/
@@ -21,11 +97,12 @@ http://maven.jahia.org/maven2/
 http://repo.jenkins-ci.org/public/
 ```
 
-Put this in your `~/.m2/settings.xml`
+Put this in your `~/.m2/settings.xml`. We want our public Repository group to be accessible without authentication. 
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<settings xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd" xmlns="http://maven.apache.org/SETTINGS/1.1.0"
+<settings xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd" 
+    xmlns="http://maven.apache.org/SETTINGS/1.1.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <mirrors>
     <mirror>
@@ -35,29 +112,8 @@ Put this in your `~/.m2/settings.xml`
       <url>http://localhost:8080/repository/all/</url>      
     </mirror>
   </mirrors>
-  <servers>
-    <server>
-      <id>remote-repos</id>
-      <username>admin</username>
-      <password>admin1</password>
-    </server>
-  </servers>
 </settings>
 ```
-
-Start up Container
-
-```bash
-docker volume create archiva-home
-docker run \
-    --name archiva \
-    --tty \
-    -p 8080:8080 \
-    -v archiva-home:/archiva-home \
-    codeclou/docker-apache-archiva:2.2.1
-```
-
-Now go to http://localhost:8080 and configure user `admin` with password `admin1`
 
 -----
 
@@ -65,9 +121,11 @@ Now go to http://localhost:8080 and configure user `admin` with password `admin1
 
 ### Trademarks and Third Party Licenses
 
- * **Apache Archiva™**
-   * Apache Archiva, Archiva, Apache, the Apache feather logo, and the Apache Archiva project logos are [trademarks of The Apache Software Foundation](https://www.apache.org/).
-   * It is licensed under the [Apache License](http://www.apache.org/licenses/).
+ * **Sonatype Nexus OSS**
+   * Sonatype and Sonatype Nexus are trademarks of [Sonatype, Inc](https://www.sonatype.org/).
+   * Sonatype Nexus OSS is licensed under the [Eclipse Public License 1.0](https://github.com/sonatype/nexus-public/blob/master/LICENSE.txt).
+ * **Apache Maven**
+   * Apache Maven and Maven are trademarks of the [Apache Software Foundation](http://www.apache.org/).
  * **Oracle Java JDK 8**
    * Oracle and Java are registered [trademarks of Oracle](https://www.oracle.com/legal/trademarks.html) and/or its affiliates. Other names may be trademarks of their respective owners.
    * Please check yourself for corresponding Licenses and Terms of Use at [www.oracle.com](https://www.oracle.com/).
