@@ -60,7 +60,7 @@ docker start nexus-oss
 
 **(3) Start Post Configuration**
 
-Now go to **[http://localhost:8333/](http://localhost:8333/) and log in as `admin` with password `admin123`.
+Now go to **[http://localhost:8333/](http://localhost:8333/)** and log in as `admin` with password `admin123`.
 
 Configure the Instance to your liking.
 
