@@ -14,8 +14,8 @@ sed -i 's@-XX:LogFile=../sonatype-work/nexus3/log/jvm.log@-XX:LogFile=/nexus-hom
 # see: http://books.sonatype.com/nexus-book/reference3/install.html#config-http-port
 sed -i 's@application-port=8081@application-port=8333@g' /nexus/nexus-latest/etc/nexus-default.properties
 
+if [ ! -d /nexus-home/etc ];  then mkdir /nexus-home/etc; fi
 if [ ! -d /nexus-home/log ];  then mkdir /nexus-home/log; fi
 if [ ! -d /nexus-home/tmp ];  then mkdir /nexus-home/tmp; fi
-if [ ! -d /nexus-home/data ]; then mkdir /nexus-home/data; fi
 
 exec "$@"

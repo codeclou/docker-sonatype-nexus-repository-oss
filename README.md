@@ -2,20 +2,11 @@
 
 Dockerized [Sonatype Nexus Repository Manager OSS](https://www.sonatype.com/nexus-repository-oss) ready to use as Proxy for most common Repositories.
 
-:bangbang: WORK IN PROGRESS :bangbang:
-
-**:red_circle: Note:** This docker image is pre configured to run in a trusted network of a startup. 
-**Security is configured loosely** so that the Nexus OSS just acts as a 'Proxy' for all repositories out in the world.
-The primary focus is to safe bandwidth when downloading maven jars or docker images from the internet. 
-If you care for security and want to upload artifacts - that should not be downloadable without authentication - 
-to Nexus OSS, please do not use this image! You can also use the [official Docker Image](https://hub.docker.com/r/sonatype/nexus3/)
-
 -----
 
 &nbsp;
 
 ### Prerequisites
-
 
  * Runs as non-root with fixed UID 10777 and GID 10777. See [howto prepare volume permissions](https://github.com/codeclou/doc/blob/master/docker/README.md).
  * See [howto use SystemD for named Docker-Containers and system startup](https://github.com/codeclou/doc/blob/master/docker/README.md).
@@ -36,30 +27,28 @@ Add the alias on your Docker-Host machine. Or configure a valid hostname in your
 sudo su
 echo "127.0.0.1  nexus-oss" >> /etc/hosts
 ```
------
+
+**(2) Prepare the shared volume directory**
+
+```bash
+sudo su
+mkdir /opt/nexus-oss-home
+chown 10777:10777 /opt/nexus-oss-home
+```
+
 
 &nbsp;
 
 ### Usage
 
-It will use volumes for persistent storage.
-
-**(1) Create Volumes**
-
-```bash
-docker volume create nexus-oss-home
-```
-
-&nbsp;
-
-**(2) Create Nexus OSSInstance**
+**(1) Create Nexus OSS Instance**
 
 ```bash
 docker create \
     --rm \
     --name nexus-oss \
     -p 18085:8085 \
-    -v nexus-home:/nexus-home \
+    -v /opt/nexus-oss-home:/nexus-home \
     codeclou/docker-sonatype-nexus-repository-oss:3.3.0-01
 
 docker start nexus-oss
@@ -71,49 +60,10 @@ docker start nexus-oss
 
 **(3) Start Post Configuration**
 
+Now go to **[http://localhost:8333/](http://localhost:8333/) and log in as `admin` with password `admin123`.
 
-todo
+Configure the Instance to your liking.
 
-
------
-
-&nbsp;
-
-### Maven Repository Mirror
-
-Preconfigured remote Repositories
-
-```
-https://maven.atlassian.com/3rdparty/
-https://maven.atlassian.com/public/
-https://maven.atlassian.com/public-snapshot/
-https://repo.spring.io/release
-https://repo.spring.io/milestone
-https://repo.spring.io/snapshot
-https://maven.java.net/content/groups/public/
-https://repo.maven.apache.org/maven2/
-https://repository.apache.org/content/repositories/releases/
-http://maven.jahia.org/maven2/
-http://repo.jenkins-ci.org/public/
-```
-
-Put this in your `~/.m2/settings.xml`. We want our public Repository group to be accessible without authentication. 
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<settings xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd" 
-    xmlns="http://maven.apache.org/SETTINGS/1.1.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <mirrors>
-    <mirror>
-      <mirrorOf>*</mirrorOf>
-      <name>remote-repos</name>
-      <id>remote-repos</id>
-      <url>http://localhost:8080/repository/all/</url>      
-    </mirror>
-  </mirrors>
-</settings>
-```
 
 -----
 

@@ -1,5 +1,7 @@
-FROM codeclou/docker-oracle-jdk:8u121
+FROM codeclou/docker-oracle-jdk:8u131
 
+#FROM frolvlad/alpine-oraclejdk8:full
+#RUN mkdir /opt
 
 ENV NEXUS_OSS_VERSION 3.3.0-01
 ENV NEXUS_OSS_MD5SUM  54cf2d9da3cdeb6ab7dc54f0008bf9a7
