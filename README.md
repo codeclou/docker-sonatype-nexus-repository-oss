@@ -1,5 +1,7 @@
 # docker-sonatype-nexus-repository-oss
 
+[![](https://codeclou.github.io/doc/badges/generated/docker-image-size-500.svg?v2)](https://hub.docker.com/r/codeclou/docker-sonatype-nexus-repository-oss/tags/) [![](https://codeclou.github.io/doc/badges/generated/docker-from-alpine-3.5.svg)](https://alpinelinux.org/) [![](https://codeclou.github.io/doc/badges/generated/docker-run-as-non-root.svg)](https://docs.docker.com/engine/reference/builder/#/user)
+
 Dockerized [Sonatype Nexus Repository Manager OSS](https://www.sonatype.com/nexus-repository-oss) ready to use as Proxy for most common Repositories.
 
 -----
