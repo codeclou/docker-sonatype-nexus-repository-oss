@@ -38,6 +38,7 @@ mkdir /opt/nexus-oss-home
 chown 10777:10777 /opt/nexus-oss-home
 ```
 
+-----
 
 &nbsp;
 
@@ -95,4 +96,4 @@ Configure the Instance to your liking.
 
 ### License
 
-[MIT](https://github.com/codeclou/docker-apache-archiva/blob/master/LICENSE) © [Bernhard Grünewaldt](https://github.com/clouless)
+[MIT](https://github.com/codeclou/docker-sonatype-nexus-repository-oss/blob/master/LICENSE) © [Bernhard Grünewaldt](https://github.com/clouless)
