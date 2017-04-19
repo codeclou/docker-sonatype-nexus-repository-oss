@@ -49,12 +49,12 @@ chown 10777:10777 /opt/nexus-oss-home
 ```bash
 docker create \
     --rm \
-    --name nexus-oss \
-    -p 18085:8085 \
+    --name nexus \
+    -p 8333:8333 \
     -v /opt/nexus-oss-home:/nexus-home \
     codeclou/docker-sonatype-nexus-repository-oss:3.3.0-01
 
-docker start nexus-oss
+docker start nexus
 ```
 
  
