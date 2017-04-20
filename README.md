@@ -48,7 +48,6 @@ chown 10777:10777 /opt/nexus-oss-home
 
 ```bash
 docker create \
-    --rm \
     --name nexus \
     -p 8333:8333 \
     -v /opt/nexus-oss-home:/nexus-home \
