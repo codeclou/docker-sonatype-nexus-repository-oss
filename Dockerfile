@@ -33,7 +33,6 @@ RUN addgroup -g 10777 worker && \
 # FILES
 #
 COPY docker-entrypoint.sh /work-private/docker-entrypoint.sh
-COPY conf /work-private/conf
 RUN chmod u+rx,g+rx,o+rx,a-w /work-private/docker-entrypoint.sh && \
     chown -R worker:worker /work-private/
     
