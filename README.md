@@ -38,6 +38,40 @@ mkdir /opt/nexus-oss-home
 chown 10777:10777 /opt/nexus-oss-home
 ```
 
+**(3) Generate a self signed SSL Certificate for Nexus**
+
+```
+NEXUS_DOMAIN="nexus.home.codeclou.io"
+NEXUS_IP_ADDRESS="192.168.178.66"
+
+keytool -genkeypair -keystore keystore.jks \
+        -storepass password \
+        -keypass password \
+        -alias jetty \
+        -keyalg RSA \
+        -keysize 2048 \
+        -validity 5000 \
+        -dname "CN=${NEXUS_DOMAIN}, OU=Example, O=Sonatype, L=Unspecified, ST=Unspecified, C=US" \
+        -ext "SAN=DNS:${NEXUS_DOMAIN},IP:${NEXUS_IP_ADDRESS}" \
+        -ext "BC=ca:true"
+```
+
+Now you should have a file called `keystore.jks`
+We need to convert it to BASE64 encoding so that we can inject it as ENV var into the docker container
+
+```
+openssl base64 -in keystore.jks -out keystore.jks.base64
+```
+
+**(4) Trust the certificate on all clients**
+
+```
+keytool -list -rfc -keystore keystore.jks  -storepass password
+```
+
+Displays the certificate. Copy paste it to your clients and trust the certs.
+[See Docker Docs on SSL Trusting](https://docs.docker.com/registry/insecure/#docker-still-complains-about-the-certificate-when-using-authentication)
+
 -----
 
 &nbsp;
@@ -47,34 +81,25 @@ chown 10777:10777 /opt/nexus-oss-home
 **(1) Create Nexus OSS Instance**
 
 ```bash
+NEXUS_DOMAIN="nexus.home.codeclou.io"
+NEXUS_IP_ADDRESS="192.168.178.66"
+NEXUS_KEYSTORE_JKS_BASE64=$(cat keystore.jks.base64)
+
 docker create \
     --name nexus \
     -p 8443:8443 \
+    -p 8444:8444 \
+    -p 8445:8445 \
     -v /opt/nexus-oss-home:/nexus-home \
     -e NEXUS_DOMAIN="nexus.home.codeclou.io" \
     -e NEXUS_IP_ADDRESS="192.168.178.66" \
+    -e NEXUS_KEYSTORE_JKS_BASE64=$NEXUS_KEYSTORE_JKS_BASE64 \
     codeclou/docker-sonatype-nexus-repository-oss:3.5.0-02
 
 docker start nexus
 ```
 
-Now it will print out the created self signed certificate which you will have to trust on all clients.
 
-```
-DOCKER ENTRYPOINT >> =================================
-DOCKER ENTRYPOINT >>
-DOCKER ENTRYPOINT >> PLEASE TRUST THIS CERTIFICATE WHERE DOCKER RUNS AND ON CLIENT MACHINES
-
------BEGIN CERTIFICATE-----
-MIID3DCCAsSgAwIBAgIEUMxHVjANBgkqhkiG9w0BAQsFADCBgTELMAkGA1UEBhMC
-...
-DlK8j8uOTohm/VxF3yd0CEWBOATh2iOHB2xL5LDphrQ=
------END CERTIFICATE-----
-
-DOCKER ENTRYPOINT >>
-DOCKER ENTRYPOINT >> =================================
-DOCKER ENTRYPOINT >> you have 20sec to copy the cert and then nexus will start
-```
 
 &nbsp;
 
@@ -84,6 +109,14 @@ Now go to **[https://nexus.home.codeclou.io:8443/](https://nexus.home.codeclou.i
 
 Configure the Instance to your liking.
 
+&nbsp;
+
+
+**(3) Docker Registry**
+
+The ports `8444` and `8445` can be used for docker registry Endpoints.
+
+![](./doc/nexus-docker-registry-port.png)
 
 -----
 

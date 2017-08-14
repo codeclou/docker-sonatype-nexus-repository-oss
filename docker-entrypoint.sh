@@ -21,26 +21,15 @@ echo "application-port-ssl=8443" >> /nexus/nexus-latest/etc/nexus-default.proper
 #
 # SSL (see doc: https://support.sonatype.com/hc/en-us/articles/217542177-Using-Self-Signed-Certificates-with-Nexus-Repository-Manager-and-Docker-Daemon)
 #
-keytool -genkeypair -keystore keystore.jks \
-        -storepass password \
-        -keypass password \
-        -alias jetty \
-        -keyalg RSA \
-        -keysize 2048 \
-        -validity 5000 \
-        -dname "CN=${NEXUS_DOMAIN}, OU=Example, O=Sonatype, L=Unspecified, ST=Unspecified, C=US" \
-        -ext "SAN=DNS:${NEXUS_DOMAIN},IP:${NEXUS_IP_ADDRESS}" \
-        -ext "BC=ca:true"
-mv keystore.jks /nexus/nexus-latest/etc/ssl/
+echo $NEXUS_KEYSTORE_JKS_BASE64 | base64 --decode > /nexus/nexus-latest/etc/ssl/keystore.jks
+keytool -list -rfc -keystore keystore.jks  -storepass password
 
 echo "DOCKER ENTRYPOINT >> ================================="
 echo "DOCKER ENTRYPOINT >> "
-echo "DOCKER ENTRYPOINT >> PLEASE TRUST THIS CERTIFICATE WHERE DOCKER RUNS AND ON CLIENT MACHINES"
+echo "DOCKER ENTRYPOINT >> LIST CERTIFICATE - IF THERE ARE NO ERRORS ALL IS FINE"
 keytool -list -rfc -keystore /nexus/nexus-latest/etc/ssl/keystore.jks  -storepass password
 echo "DOCKER ENTRYPOINT >> "
 echo "DOCKER ENTRYPOINT >> ================================="
-echo "DOCKER ENTRYPOINT >> you have 20sec to copy the cert and then nexus will start"
-sleep 20
 
 
 
