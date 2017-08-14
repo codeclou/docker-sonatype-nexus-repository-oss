@@ -60,7 +60,7 @@ Now you should have a file called `keystore.jks`
 We need to convert it to BASE64 encoding so that we can inject it as ENV var into the docker container
 
 ```
-openssl base64 -in keystore.jks -out keystore.jks.base64
+openssl base64 -in keystore.jks -out keystore.jks.base64 -A
 ```
 
 **(4) Trust the certificate on all clients**
@@ -93,7 +93,7 @@ docker create \
     -v /opt/nexus-oss-home:/nexus-home \
     -e NEXUS_DOMAIN="nexus.home.codeclou.io" \
     -e NEXUS_IP_ADDRESS="192.168.178.66" \
-    -e NEXUS_KEYSTORE_JKS_BASE64=$NEXUS_KEYSTORE_JKS_BASE64 \
+    -e NEXUS_KEYSTORE_JKS_BASE64=""$NEXUS_KEYSTORE_JKS_BASE64" \
     codeclou/docker-sonatype-nexus-repository-oss:3.5.0-02
 
 docker start nexus
