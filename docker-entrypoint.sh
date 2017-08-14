@@ -21,8 +21,7 @@ echo "application-port-ssl=8443" >> /nexus/nexus-latest/etc/nexus-default.proper
 #
 # SSL (see doc: https://support.sonatype.com/hc/en-us/articles/217542177-Using-Self-Signed-Certificates-with-Nexus-Repository-Manager-and-Docker-Daemon)
 #
-echo $NEXUS_KEYSTORE_JKS_BASE64 | base64 --decode > /nexus/nexus-latest/etc/ssl/keystore.jks
-keytool -list -rfc -keystore keystore.jks  -storepass password
+echo $NEXUS_KEYSTORE_JKS_BASE64 | base64 -d > /nexus/nexus-latest/etc/ssl/keystore.jks
 
 echo "DOCKER ENTRYPOINT >> ================================="
 echo "DOCKER ENTRYPOINT >> "
