@@ -27,7 +27,7 @@ Add the alias on your Docker-Host machine. Or configure a valid hostname in your
 
 ```bash
 sudo su
-echo "127.0.0.1  nexus-oss" >> /etc/hosts
+echo "127.0.0.1  nexus.home.codeclou.io" >> /etc/hosts
 ```
 
 **(2) Prepare the shared volume directory**
@@ -49,20 +49,38 @@ chown 10777:10777 /opt/nexus-oss-home
 ```bash
 docker create \
     --name nexus \
-    -p 8333:8333 \
+    -p 8443:8443 \
     -v /opt/nexus-oss-home:/nexus-home \
-    codeclou/docker-sonatype-nexus-repository-oss:3.3.0-01
+    -e NEXUS_DOMAIN="nexus.home.codeclou.io" \
+    -e NEXUS_IP_ADDRESS="192.168.178.66" \
+    codeclou/docker-sonatype-nexus-repository-oss:3.5.0-02
 
 docker start nexus
 ```
 
- 
- 
+Now it will print out the created self signed certificate which you will have to trust on all clients.
+
+```
+DOCKER ENTRYPOINT >> =================================
+DOCKER ENTRYPOINT >>
+DOCKER ENTRYPOINT >> PLEASE TRUST THIS CERTIFICATE WHERE DOCKER RUNS AND ON CLIENT MACHINES
+
+-----BEGIN CERTIFICATE-----
+MIID3DCCAsSgAwIBAgIEUMxHVjANBgkqhkiG9w0BAQsFADCBgTELMAkGA1UEBhMC
+...
+DlK8j8uOTohm/VxF3yd0CEWBOATh2iOHB2xL5LDphrQ=
+-----END CERTIFICATE-----
+
+DOCKER ENTRYPOINT >>
+DOCKER ENTRYPOINT >> =================================
+DOCKER ENTRYPOINT >> you have 20sec to copy the cert and then nexus will start
+```
+
 &nbsp;
 
 **(2) Start Post Configuration**
 
-Now go to **[http://localhost:8333/](http://localhost:8333/)** and log in as `admin` with password `admin123`.
+Now go to **[https://nexus.home.codeclou.io:8443/](https://nexus.home.codeclou.io:8443/)** and log in as `admin` with password `admin123`.
 
 Configure the Instance to your liking.
 
@@ -88,7 +106,7 @@ Configure the Instance to your liking.
    * Ubuntu and Canonical are registered [trademarks of Canonical Ltd.](https://www.ubuntu.com/legal/short-terms)
  * **Apple**
    * macOS®, Mac and OS X are [trademarks of Apple Inc.](http://www.apple.com/legal/intellectual-property/trademark/appletmlist.html), registered in the U.S. and other countries.
-   
+
 -----
 
 &nbsp;

@@ -1,7 +1,7 @@
-FROM codeclou/docker-oracle-jdk:8u131
+FROM codeclou/docker-oracle-jdk:8u141
 
-ENV NEXUS_OSS_VERSION 3.3.0-01
-ENV NEXUS_OSS_MD5SUM  54cf2d9da3cdeb6ab7dc54f0008bf9a7
+ENV NEXUS_OSS_VERSION 3.5.0-02
+ENV NEXUS_OSS_MD5SUM  12e92c23a17366c6a9838a4033d0e9e0
 
 RUN addgroup -g 10777 worker && \
     adduser -h /work -H -D -G worker -u 10777 worker && \
@@ -35,18 +35,20 @@ RUN addgroup -g 10777 worker && \
 COPY docker-entrypoint.sh /work-private/docker-entrypoint.sh
 RUN chmod u+rx,g+rx,o+rx,a-w /work-private/docker-entrypoint.sh && \
     chown -R worker:worker /work-private/
-    
+
 #
 # WORKDIR
 #
 WORKDIR /work
-EXPOSE 8333
+EXPOSE 8443
 
 #
 # RUN
 #
 USER worker
 ENV NEXUS_OSS_BASE /nexus-home
+ENV NEXUS_DOMAIN localhost
+ENV NEXUS_IP_ADDRESS 127.0.0.1
 VOLUME ["/work"]
 VOLUME ["/nexus-home"]
 ENTRYPOINT ["/work-private/docker-entrypoint.sh"]
