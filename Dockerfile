@@ -43,6 +43,12 @@ WORKDIR /work
 EXPOSE 8443
 
 #
+# k8s readiness exec probe cmd
+#
+COPY k8s-readiness-probe.sh /work-private/k8s-readiness-probe.sh
+RUN chmod u+rx,g+rx,o+rx,a-w /work-private/k8s-readiness-probe.sh
+
+#
 # RUN
 #
 USER worker
