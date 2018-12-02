@@ -1,4 +1,4 @@
-FROM 8u181-alpine3.8
+FROM openjdk:8u181-alpine3.8
 
 ENV NEXUS_OSS_VERSION 3.14.0-04
 ENV NEXUS_OSS_MD5SUM  aba7c67feaa1f93480a89e38c3d6f4ae
@@ -6,11 +6,13 @@ ENV NEXUS_OSS_MD5SUM  aba7c67feaa1f93480a89e38c3d6f4ae
 RUN addgroup -g 10777 worker && \
     adduser -h /work -H -D -G worker -u 10777 worker && \
     mkdir -p /work && \
+    mkdir -p /opt && \
     mkdir -p /work-private && \
     mkdir /nexus && mkdir /nexus-home && \
     chown -R worker:worker /work/ && \
     chown -R worker:worker /work-private/ && \
     apk add --no-cache \
+            ca-certificates \
             bash \
             curl \
             tar \
@@ -18,7 +20,7 @@ RUN addgroup -g 10777 worker && \
             py-pip && \
             pip install shinto-cli && \
     curl -jkSL -o /opt/nexus-${NEXUS_OSS_VERSION}-unix.tar.gz \
-         http://download.sonatype.com/nexus/3/nexus-${NEXUS_OSS_VERSION}-unix.tar.gz  && \
+         https://sonatype-download.global.ssl.fastly.net/repository/repositoryManager/3/nexus-${NEXUS_OSS_VERSION}-unix.tar.gz && \
     cd /opt && \
     echo "${NEXUS_OSS_MD5SUM}  nexus-${NEXUS_OSS_VERSION}-unix.tar.gz" > nexus-${NEXUS_OSS_VERSION}-unix.tar.gz-md5sum && \
     md5sum -c nexus-${NEXUS_OSS_VERSION}-unix.tar.gz-md5sum && \
