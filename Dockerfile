@@ -1,7 +1,7 @@
-FROM codeclou/docker-oracle-jdk:8u141
+FROM 8u181-alpine3.8
 
-ENV NEXUS_OSS_VERSION 3.5.0-02
-ENV NEXUS_OSS_MD5SUM  12e92c23a17366c6a9838a4033d0e9e0
+ENV NEXUS_OSS_VERSION 3.14.0-04
+ENV NEXUS_OSS_MD5SUM  aba7c67feaa1f93480a89e38c3d6f4ae
 
 RUN addgroup -g 10777 worker && \
     adduser -h /work -H -D -G worker -u 10777 worker && \
