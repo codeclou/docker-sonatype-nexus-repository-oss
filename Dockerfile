@@ -1,7 +1,6 @@
-FROM openjdk:8u181-alpine3.8
+FROM adoptopenjdk/openjdk8:x86_64-alpine-jdk8u212-b04
 
-ENV NEXUS_OSS_VERSION 3.14.0-04
-ENV NEXUS_OSS_MD5SUM  aba7c67feaa1f93480a89e38c3d6f4ae
+ENV NEXUS_OSS_VERSION 3.16.2-01
 
 RUN addgroup -g 10777 worker && \
     adduser -h /work -H -D -G worker -u 10777 worker && \
@@ -22,8 +21,6 @@ RUN addgroup -g 10777 worker && \
     curl -jkSL -o /opt/nexus-${NEXUS_OSS_VERSION}-unix.tar.gz \
          https://sonatype-download.global.ssl.fastly.net/repository/repositoryManager/3/nexus-${NEXUS_OSS_VERSION}-unix.tar.gz && \
     cd /opt && \
-    echo "${NEXUS_OSS_MD5SUM}  nexus-${NEXUS_OSS_VERSION}-unix.tar.gz" > nexus-${NEXUS_OSS_VERSION}-unix.tar.gz-md5sum && \
-    md5sum -c nexus-${NEXUS_OSS_VERSION}-unix.tar.gz-md5sum && \
     tar zxf /opt/nexus-${NEXUS_OSS_VERSION}-unix.tar.gz -C /nexus && \
     rm /opt/nexus-${NEXUS_OSS_VERSION}-unix.tar.gz && \
     cd /nexus && \
