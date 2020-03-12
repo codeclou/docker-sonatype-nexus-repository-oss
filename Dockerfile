@@ -1,6 +1,6 @@
 FROM adoptopenjdk/openjdk8:x86_64-alpine-jdk8u212-b04
 
-ENV NEXUS_OSS_VERSION 3.16.2-01
+ENV NEXUS_OSS_VERSION 3.21.1-01
 
 RUN addgroup -g 10777 worker && \
     adduser -h /work -H -D -G worker -u 10777 worker && \
